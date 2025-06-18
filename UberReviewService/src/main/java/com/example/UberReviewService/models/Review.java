@@ -1,5 +1,6 @@
 package com.example.UberReviewService.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler","booking"})
 public class Review extends BaseModel{
 
 
@@ -25,7 +27,7 @@ public class Review extends BaseModel{
 
     private Double rating;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @JoinColumn(nullable = false)
      private Booking booking;
 

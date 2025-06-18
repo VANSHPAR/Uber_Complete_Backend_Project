@@ -4,6 +4,7 @@ import com.example.UberReviewService.Adapters.CreateReviewDtotoReviewAdapter;
 
 import com.example.UberReviewService.Services.ReviewService;
 import com.example.UberReviewService.dtos.CreateReviewDto;
+import com.example.UberReviewService.dtos.ReviewDto;
 import com.example.UberReviewService.models.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,14 @@ public class ReviewController {
         }
 
         Review review = this.reviewService.publishReview(r);
-        return new ResponseEntity<>(review, HttpStatus.CREATED);
+        ReviewDto response=ReviewDto.builder()
+                .id(review.getId())
+                .content(review.getContent())
+                .rating(review.getRating())
+                .booking(review.getBooking().getId())
+                .createdAt(review.getCreatedAt())
+                .updatedAt(review.getUpdatedAt()).build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping
