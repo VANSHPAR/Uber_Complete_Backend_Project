@@ -6,6 +6,7 @@ import com.example.uberprojectauthservice.dto.PassengerDto;
 import com.example.uberprojectauthservice.dto.PassengerSignuprequestDto;
 import com.example.uberprojectauthservice.services.AuthService;
 import com.example.uberprojectauthservice.services.JwtService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,16 +50,16 @@ public class AuthController {
     }
 
     @PostMapping("/signin/passenger")
-    public ResponseEntity<?> signIn(@RequestBody AuthRequestDto authRequestDto, HttpServletResponse response){
+    public ResponseEntity<?> signIn(@RequestBody AuthRequestDto authRequestDto  , HttpServletResponse response){
         Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDto.getEmail(),authRequestDto.getPassword()));
         //UsernamePasswordAuthenticationToken comes from spring
         if(authentication.isAuthenticated()){
             String jwtToken=jwtService.createToken(authRequestDto.getEmail());
             ResponseCookie cookie=ResponseCookie.from("jwtToken",jwtToken)
-                    .httpOnly(true)
+                    .httpOnly(true)//if we make it true client can't access jwt token in his browser ,if it is false client can access it.
                     .secure(false)
                     .path("/")
-                    .maxAge(cookieExpiry)
+                    .maxAge(7*24*3600)
                     .build();
 
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -66,5 +67,14 @@ public class AuthController {
             return new ResponseEntity<>(AuthResponseDto.builder().success(true).build(), HttpStatus.OK);
         }
         else throw new UsernameNotFoundException("Invalid email or password");
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<?> validate(HttpServletRequest request){
+
+        for(Cookie cookie:request.getCookies()){
+            System.out.println(cookie.getName()+":"+cookie.getValue());
+        }
+        return new  ResponseEntity<>("Success",HttpStatus.OK);
     }
 }
