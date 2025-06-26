@@ -3,28 +3,28 @@
   <groupId>com.example</groupId>
   <artifactId>UberProject_EntityService</artifactId>
   <versioning>
-    <lastUpdated>20250625154017</lastUpdated>
+    <lastUpdated>20250626134359</lastUpdated>
     <snapshot>
       <localCopy>true</localCopy>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
+        <extension>module</extension>
+        <value>0.0.3-SNAPSHOT</value>
+        <updated>20250626134359</updated>
+      </snapshotVersion>
+      <snapshotVersion>
         <classifier>plain</classifier>
         <extension>jar</extension>
-        <value>0.0.2-SNAPSHOT</value>
-        <updated>20250625154017</updated>
+        <value>0.0.3-SNAPSHOT</value>
+        <updated>20250626134359</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>0.0.2-SNAPSHOT</value>
-        <updated>20250625154017</updated>
-      </snapshotVersion>
-      <snapshotVersion>
-        <extension>module</extension>
-        <value>0.0.2-SNAPSHOT</value>
-        <updated>20250625154017</updated>
+        <value>0.0.3-SNAPSHOT</value>
+        <updated>20250626134359</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
 </metadata>
