@@ -11,12 +11,10 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+//@Table(indexes = {
+//        @Index(columnList = "driver_id")
+//})
 public class Booking extends BaseModel{
-
-
-
-
-
 
     @Enumerated(value= EnumType.STRING) //to specify  BookingStatus is enum we use @Enumerated and it gives facility->if you want to store this enum as number or as string
     private BookingStatus bookingStatus;
@@ -30,11 +28,17 @@ public class Booking extends BaseModel{
     private Long totalDistance;
 
     //Booking has one Driver
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Driver driver;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Passenger passenger;
+
+    @OneToOne
+    private ExactLocation startLocation;
+
+    @OneToOne
+    private ExactLocation endLocation;
 
 
 }
