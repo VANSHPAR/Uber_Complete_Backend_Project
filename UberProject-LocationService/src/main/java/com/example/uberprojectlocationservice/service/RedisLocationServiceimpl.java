@@ -20,7 +20,7 @@ public class RedisLocationServiceimpl implements LocationService{
     private static final Double SEARCH_RADIUS=100.0;
 
     public RedisLocationServiceimpl(StringRedisTemplate stringRedisTemplate) {
-        this.stringRedisTemplate=stringRedisTemplate;
+        this.stringRedisTemplate=stringRedisTemplate; 
     }
     @Override
     public Boolean saveDriverLocation(String drivarId, Double latitude, Double longitude) {
