@@ -11,30 +11,30 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 
-@Controller
-public class TestController {
-
-    private final SimpMessagingTemplate simpMessagingTemplate;
-
-    public TestController(SimpMessagingTemplate simpMessagingTemplate) {
-        this.simpMessagingTemplate = simpMessagingTemplate;
-    }
-
-    @MessageMapping("/ping")
-    @SendTo("/topic/ping")
-    public TestResponse pingCheck(TestResponse message) {
-        System.out.println("recieved message from client "+ message.getData());
-        TestResponse response = TestResponse.builder().data("Recieved").build();
-        return response;
-    }
-
-    @SendTo("/topic/scheduled")
-    @Scheduled(fixedRate = 2000)
-    public void sendPeriodicMessage() {
-        System.out.println("Executed periodic function");
-        simpMessagingTemplate.convertAndSend("/topic/scheduled", "Periodic message from server "+System.currentTimeMillis());
-
-    }
-
-
-}
+//@Controller
+//public class TestController {
+//
+//    private final SimpMessagingTemplate simpMessagingTemplate;
+//
+//    public TestController(SimpMessagingTemplate simpMessagingTemplate) {
+//        this.simpMessagingTemplate = simpMessagingTemplate;
+//    }
+//
+//    @MessageMapping("/ping")
+//    @SendTo("/topic/ping")
+//    public TestResponse pingCheck(TestResponse message) {
+//        System.out.println("recieved message from client "+ message.getData());
+//        TestResponse response = TestResponse.builder().data("Recieved").build();
+//        return response;
+//    }
+//
+//    @SendTo("/topic/scheduled")
+//    @Scheduled(fixedRate = 2000)
+//    public void sendPeriodicMessage() {
+//       System.out.println("Executed periodic function");
+//        simpMessagingTemplate.convertAndSend("/topic/scheduled", "Periodic message from server "+System.currentTimeMillis());
+//
+//    }
+//
+//
+//}

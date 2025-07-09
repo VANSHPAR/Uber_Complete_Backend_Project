@@ -15,6 +15,10 @@ java {
 
 repositories {
     mavenCentral()
+    mavenLocal()
+}
+ext {
+    set('springCloudVersion', "2025.0.0")
 }
 
 dependencies {
@@ -23,6 +27,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    implementation 'com.example:UberProject_EntityService:0.0.5-SNAPSHOT'
+    // https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka
+    implementation("org.springframework.kafka:spring-kafka:3.3.3")
+}
+
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 tasks.named('test') {
