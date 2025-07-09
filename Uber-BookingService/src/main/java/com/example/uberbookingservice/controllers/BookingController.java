@@ -25,8 +25,9 @@ public class BookingController {
         return new ResponseEntity<>(bookingService.createBooking(createBooikngDto), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{driverId}")
+    @PostMapping("/{driverId}")
     public ResponseEntity<UpdateBookingResponseDto> updateBooing(@RequestBody UpdateBookingRequestDto updateBookingRequestDto, @PathVariable Long driverId) {
+
         return new ResponseEntity<>(bookingService.updateBooking(updateBookingRequestDto,driverId),HttpStatus.OK);
     }
 }

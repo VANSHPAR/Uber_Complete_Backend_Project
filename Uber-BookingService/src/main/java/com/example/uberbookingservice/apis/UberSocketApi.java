@@ -2,12 +2,13 @@ package com.example.uberbookingservice.apis;
 
 import com.example.uberbookingservice.dto.DriverLocationDto;
 import com.example.uberbookingservice.dto.NearbyDriverRequestDto;
+import com.example.uberbookingservice.dto.RideRequestDto;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface LocationServiceApi {
+public interface UberSocketApi {
 
-    @POST("/api/location/nearby/drivers")
-    Call<DriverLocationDto[]> getNearbyDrivers(@Body NearbyDriverRequestDto requestDto);
+    @POST("/api/socket/newride")
+    Call<Boolean> raiseRideRequest(@Body RideRequestDto requestDto);
 }
