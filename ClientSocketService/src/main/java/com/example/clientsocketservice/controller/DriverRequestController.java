@@ -51,9 +51,9 @@ public class DriverRequestController {
     }
 
     @GetMapping
-    public Boolean help(){
-        kafkaProducerService.publishMessage("sample-topic","Hello World");
-        return Boolean.TRUE;
+    public boolean help(){
+
+        return true;
     }
 
 
@@ -66,6 +66,7 @@ public class DriverRequestController {
                 .bookingStatus("SCHEDULED")
                 .build();
         ResponseEntity<UpdateBookingRequestDto> result=this.restTemplate.postForEntity("http://localhost:7464/api/v1/booking/"+rideResposeDto.bookingId,updateBookingRequestDto, UpdateBookingRequestDto.class);
+        kafkaProducerService.publishMessage("sample-topic","Hello World");
         System.out.println(result.getStatusCode());
     }
 
