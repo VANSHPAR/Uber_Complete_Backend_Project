@@ -10,6 +10,6 @@ public class KafkaConsumerService1 {
     @KafkaListener(topics = "sample-topic",groupId = "sample-group-2")
     public void listen(String message)
     {
-        System.out.println("kafka message from sample topic "+message);
+        System.out.println("kafka consumer new  message from sample topic "+message);
     }
 }

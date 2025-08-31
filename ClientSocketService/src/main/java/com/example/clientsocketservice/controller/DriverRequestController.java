@@ -1,9 +1,12 @@
 package com.example.clientsocketservice.controller;
 
 import com.example.clientsocketservice.dto.RideRequestDto;
-import com.example.clientsocketservice.dto.RideResposeDto;
+import com.example.clientsocketservice.dto.RideResponseDto;
+import com.example.clientsocketservice.dto.RideResponseDto;
 import com.example.clientsocketservice.dto.UpdateBookingRequestDto;
+import com.example.clientsocketservice.dto.UpdateBookingResponseDto;
 import com.example.clientsocketservice.producers.KafkaProducerService;
+import com.example.uberproject_entityservice.models.BookingStatus;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/api/socket")
 public class DriverRequestController {
     private final SimpMessagingTemplate simpMessagingTemplate;
@@ -44,28 +47,30 @@ public class DriverRequestController {
 
 
     public void sendDriversNewRideRequest(  RideRequestDto  rideRequestDto) {
-       // System.out.println("Executed periodic function");
+       System.out.println("Executed periodic function");
         simpMessagingTemplate.convertAndSend("/topic/rideRequest",rideRequestDto);
 
 
     }
 
-    @GetMapping
-    public boolean help(){
 
-        return true;
-    }
 
 
     @MessageMapping("/rideResponse/{userId}")
-    public synchronized  void rideResponseHandler(@DestinationVariable String userId, RideResposeDto rideResposeDto) {
+    public synchronized  void rideResponseHandler(@DestinationVariable String userId, RideResponseDto rideResponseDto) {
 
-        System.out.println(rideResposeDto.getResponse()+" "+userId);
+        System.out.println(rideResponseDto.getResponse()+" "+userId);
+
         UpdateBookingRequestDto updateBookingRequestDto=UpdateBookingRequestDto.builder()
                 .driverId(Optional.of(Long.parseLong(userId)))
-                .bookingStatus("SCHEDULED")
+                .bookingStatus(BookingStatus.valueOf("SCHEDULED"))
                 .build();
-        ResponseEntity<UpdateBookingRequestDto> result=this.restTemplate.postForEntity("http://localhost:7464/api/v1/booking/"+rideResposeDto.bookingId,updateBookingRequestDto, UpdateBookingRequestDto.class);
+        System.out.println("Here fail 1");
+        System.out.println("rideResponseDto.bookingId = " + rideResponseDto.getBookingId());
+        System.out.println("rideResponseDto.response = " + rideResponseDto.getResponse());
+
+        ResponseEntity<UpdateBookingResponseDto> result=this.restTemplate.postForEntity("http://localhost:7464/api/v1/booking/"+rideResponseDto.bookingId,updateBookingRequestDto,UpdateBookingResponseDto.class);
+        System.out.println("Here fail 1");
         kafkaProducerService.publishMessage("sample-topic","Hello World");
         System.out.println(result.getStatusCode());
     }
