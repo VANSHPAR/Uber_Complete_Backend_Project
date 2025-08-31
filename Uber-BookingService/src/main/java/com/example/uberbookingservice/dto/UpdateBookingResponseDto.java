@@ -12,9 +12,9 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateBookingResponseDto {
-    private BookingStatus bookingStatus;
+
 
     private Long bookingId;
-
-    Optional<Driver> driver;
+    private BookingStatus bookingStatus;
+   private Optional<Long> driverId;
 }

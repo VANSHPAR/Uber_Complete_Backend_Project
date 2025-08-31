@@ -10,6 +10,7 @@ import com.example.uberproject_entityservice.models.Booking;
 import com.example.uberproject_entityservice.models.BookingStatus;
 import com.example.uberproject_entityservice.models.Driver;
 import com.example.uberproject_entityservice.models.Passenger;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import retrofit2.Response;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -56,17 +58,16 @@ public class BookingServiceimpl implements BookingService{
         Booking  booking = Booking.builder()
                 .bookingStatus(BookingStatus.ASSIGNING_DRIVER)
                 .startLocation(createBooikngDto.getStartLocation())
-                .endLocation(createBooikngDto.getEndLocation())
                 .passenger(passenger.get())
                 .build();
         Booking newBooking=bookingRepository.save(booking);
 
         //make an api call to location service to fetch nearby drivers
         NearbyDriverRequestDto request= NearbyDriverRequestDto.builder()
-                .Latitude(createBooikngDto.getStartLocation().getLatitude())
-                .Longitude(createBooikngDto.getStartLocation().getLongitude())
+                .latitude(createBooikngDto.getStartLocation().getLatitude())
+                .longitude(createBooikngDto.getStartLocation().getLongitude())
                 .build();
-
+        System.out.println(request.getLatitude()+" "+request.getLongitude());
         processNearByDriversAsync(request,createBooikngDto.getPassengerId(),newBooking.getId());
 
 //
@@ -88,29 +89,39 @@ public class BookingServiceimpl implements BookingService{
     @Override
     public UpdateBookingResponseDto updateBooking(UpdateBookingRequestDto updateBookingRequestDto, Long bookingId) {
 
-            Optional<Driver> driver=driverRepository.findById(updateBookingRequestDto.getDriverId().get());
-           // if(driver.isPresent() && driver.get().isAvailable())
-            bookingRepository.updateBookingStatusAndDriverById(bookingId,updateBookingRequestDto.getBookingStatus(),driver.get());
-          //driverRepository.update -> make it available
-            Booking booking=bookingRepository.findById(bookingId).get();
-            return UpdateBookingResponseDto.builder()
-            .bookingId(bookingId)
-                    .bookingStatus(booking.getBookingStatus())
-                    .driver(Optional.ofNullable(booking.getDriver()))
-                    .build();
+        Long driverId = updateBookingRequestDto.getDriverId()
+                .orElseThrow(() -> new IllegalArgumentException("DriverId is missing"));
+
+        Driver driver = driverRepository.findById(driverId)
+                .orElseThrow(() -> new NoSuchElementException("Driver not found with id: " + driverId));
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new NoSuchElementException("Booking not found with id: " + bookingId));
+
+        bookingRepository.updateBookingStatusAndDriverById(
+                bookingId, BookingStatus.SCHEDULED, driver);
+
+        return UpdateBookingResponseDto.builder()
+                .bookingId(bookingId)
+                .bookingStatus(booking.getBookingStatus())
+                .driverId(Optional.ofNullable(driver.getId()))
+                .build();
 
 
     }
 
     private void processNearByDriversAsync(NearbyDriverRequestDto requestDto,Long passengerId,Long bookingId) {
         Call<DriverLocationDto[]> call=locationServiceApi.getNearbyDrivers(requestDto);
+
+        System.out.println(call.request().url() + " " + call.request().method() + " " + call.request().headers());
         call.enqueue(new  Callback<DriverLocationDto[]>() {
             @Override
             public void onResponse(Call<DriverLocationDto[]> call, Response<DriverLocationDto[]> response) {
+                System.out.println(Arrays.toString(response.body()));
             if(response.isSuccessful() && response.body()!=null){
             List<DriverLocationDto> driverLocations= Arrays.asList(response.body());
-            driverLocations.forEach(driverLocation->{
-                System.out.println(driverLocation.getDriverId()+" "+driverLocation.getLatitude()+" "+driverLocation.getLongitude());
+            driverLocations.forEach(driverLocationDto->{
+                System.out.println(driverLocationDto.getDriverId()+" "+driverLocationDto.getLatitude()+" "+driverLocationDto.getLongitude());
             });
                 try {
                     raiseRideRequestAsync(RideRequestDto.builder().passengerId(passengerId).bookingId(bookingId).build());
@@ -118,7 +129,7 @@ public class BookingServiceimpl implements BookingService{
                     throw new RuntimeException(e);
                 }
             }
-            else System.out.println("Request failed"+response.message());
+            else System.out.println("that Request failed "+response.message());
             }
 
             @Override
@@ -130,16 +141,19 @@ public class BookingServiceimpl implements BookingService{
 
            private void raiseRideRequestAsync(RideRequestDto rideRequestDto) throws Exception {
         Call<Boolean> call=uberSocketApi.raiseRideRequest(rideRequestDto);
-        call.enqueue(new Callback<Boolean>() {
+               System.out.println(call.request().url() + " " + call.request().method() + " " + call.request().headers());
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                System.out.println(response.isSuccessful());
+                System.out.println(response.message());
                 if(response.isSuccessful() && response.body()!=null){
                    Boolean result=response.body();
                     System.out.println("Driver response id "+result.toString());
 
 
                 }
-                else System.out.println("Request failed"+response.message());
+                else System.out.println("this  Request failed"+response.message());
             }
 
             @Override

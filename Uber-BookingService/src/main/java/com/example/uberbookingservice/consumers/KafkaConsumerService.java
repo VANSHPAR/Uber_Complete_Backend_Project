@@ -10,6 +10,6 @@ public class KafkaConsumerService {
     @KafkaListener(topics = "sample-topic")
     public void listen(String message)
     {
-        System.out.println("kafka message from sample topic "+message);
+        System.out.println("kafka message from sample topic inside booking service "+message);
     }
 }

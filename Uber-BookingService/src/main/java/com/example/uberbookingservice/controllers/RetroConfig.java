@@ -21,6 +21,7 @@ public class RetroConfig {
 
     @Bean
     public LocationServiceApi locationServiceApi() {
+        System.out.println(getServiceUrl("UBERPROJECT-LOCATIONSERVICE"));
         return new Retrofit.Builder()
                 .baseUrl(getServiceUrl("UBERPROJECT-LOCATIONSERVICE"))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -30,11 +31,15 @@ public class RetroConfig {
 
     @Bean
     public UberSocketApi uberSocketapi() {
+       String serviceUrl=getServiceUrl("CLIENTSOCKETSERVICE");
+        System.out.println("Service URL for socket : "+serviceUrl);
+
         return new Retrofit.Builder()
-                .baseUrl(getServiceUrl("CLIENTSOCKETSERVICE"))
+                .baseUrl(serviceUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(new OkHttpClient.Builder().build())
                 .build().create(UberSocketApi.class);
+
     }
 
 }

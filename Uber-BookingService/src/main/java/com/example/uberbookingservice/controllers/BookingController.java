@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/v1/booking")
 public class BookingController {
@@ -20,14 +22,14 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateBookingResponseDto> createBooking(@RequestBody CreateBooikngDto createBooikngDto) {
+    public ResponseEntity<CreateBookingResponseDto> createBooking(@RequestBody CreateBooikngDto createBooikngDto) throws IOException {
 
         return new ResponseEntity<>(bookingService.createBooking(createBooikngDto), HttpStatus.CREATED);
     }
 
-    @PostMapping("/{driverId}")
-    public ResponseEntity<UpdateBookingResponseDto> updateBooing(@RequestBody UpdateBookingRequestDto updateBookingRequestDto, @PathVariable Long driverId) {
+    @PostMapping("/{bookingId}")
+    public ResponseEntity<UpdateBookingResponseDto> updateBooking(@RequestBody UpdateBookingRequestDto updateBookingRequestDto, @PathVariable Long bookingId) {
 
-        return new ResponseEntity<>(bookingService.updateBooking(updateBookingRequestDto,driverId),HttpStatus.OK);
+        return new ResponseEntity<>(bookingService.updateBooking(updateBookingRequestDto,bookingId),HttpStatus.OK);
     }
 }
