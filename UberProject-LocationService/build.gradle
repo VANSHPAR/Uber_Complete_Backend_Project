@@ -37,7 +37,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-   // implementation 'com.example:UberProject_EntityService:0.0.4-SNAPSHOT'
+   // implementation 'com.example:UberProject_EntityService:0.0.5-SNAPSHOT'
     implementation 'redis.clients:jedis:6.0.0'
 
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
