@@ -1,4 +1,4 @@
 //to start redis server
-//run below command in ubunty
+//run below command in ubuntu
 
 redis-server
